@@ -1,0 +1,2 @@
+class PressuresController < ApplicationController
+end
