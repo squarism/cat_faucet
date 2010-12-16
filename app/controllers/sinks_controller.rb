@@ -14,13 +14,11 @@ class SinksController < ApplicationController
   
   # we should handle the create/update here for simplicity
   def create
-    @data = request.body.read
-    
     
     respond_to do |format|
       format.json {
         # parse our body, werk the body
-        json_request = JSON.parse(@data)
+        json_request = JSON.parse(request.body.read)
                 
         # if we received a metric data point, save it to the db
         if json_request["type"] == "metric"
@@ -44,11 +42,13 @@ class SinksController < ApplicationController
               render :text => "Saved JSON serial to DB."
             else
               # TODO: logger here instead
+              # throw a 400 bad request response
               render :text => "Name incorrect in DB.  Please correct in DB or re-register sensor.", :status => 400
             end
   
           else
             # TODO: logger here instead
+            # throw a 400 bad request response
             render :text => "Sensor name incorrect in JSON.", :status => 400
           end
 
@@ -56,7 +56,20 @@ class SinksController < ApplicationController
         end
 
       }
+      
+      format.html {
+        # looks like this never gets hit
+        render :text => "Sorry we don't do HTML yet."
+      }
+      
     end
+  
+  end
+  
+  def index
+    @house = House.first
+    @sinks = @house.sinks
+    @basement_sink = @sinks.where(:name => "basement").first
   end
     
 end

@@ -1,11 +1,10 @@
-# json post to rails
+# TODO: remove me after integrating with cat_bridge.rb (arduino serial watcher)
+# json post to rails test
 
 require 'net/http'
 require 'uri'
 require 'rubygems'
 require 'json'
-
-
 
 # do JSON HTTP post to rails
 def post_json(url, input_json)
