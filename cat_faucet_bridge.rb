@@ -23,7 +23,6 @@ parity = SerialPort::NONE
 # Variables for scope reasons
 sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 start_json = false
-#end_json = false
 json_buffer = ""
 json_object = ""
 
@@ -105,8 +104,8 @@ while true do
        
       # TODO: Hash whole JSON?  Improve this logic.  Only partially validates.
       # hash is "sensor name", ie: "sinks basement"
-      #local_hash = Digest::MD5.hexdigest("#{sensor} #{name}")
-      local_hash = Digest::MD5.hexdigest("sinks basement")
+      local_hash = Digest::MD5.hexdigest("#{sensor} #{name}")
+      #local_hash = Digest::MD5.hexdigest("sinks basement")
       # 82C61D54A77D6A90219E4E40CE6C8440 = arduino
       # 82c61d54a77d6a90219e4e40ce6c8440 = ruby
 
