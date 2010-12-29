@@ -105,10 +105,18 @@ void loop() {
       //Serial.println("Turning Faucet Off.");
       
       // avoid excessive movement
-      if (servoPosition != 180) {
-        servo.write(180);
-        delay(20);    // wait for servo
-        servoPosition = 180;
+      if (servoPosition != 110) {
+        
+        // we need to overshoot this when turning on the faucet
+        // this is all calibration work with the physical qualities of the handle
+        servo.write(120);
+        delay(50);    // wait for servo
+        servo.write(100);
+        delay(50);
+        servo.write(110);
+        delay(50);
+        
+        servoPosition = 110;
         sendJSON();
       }
       
@@ -129,8 +137,19 @@ void loop() {
       //Serial.println("Turning Faucet On.");
 
       if (servoPosition != 90) {
+        // go a little beyond and then come back to keep servo from buzzing when at rest.
+        // this is all calibration work.
+        servo.write(20);
+        delay(100);  // wait for servo
+        servo.write(30);
+        delay(50);
+        servo.write(80);
+        delay(50);        
         servo.write(90);
-        delay(20);  // wait for servo
+        delay(50);
+        servo.write(80);
+        delay(50);
+        
         servoPosition = 90;
         sendJSON();
       }
@@ -201,7 +220,7 @@ void sendJSON() {
   Serial.println("\",");
 
   Serial.print("\t\"running\": \"");
-  if (servoPosition == 90) {
+  if (servoPosition == 110) {
     Serial.print(false);
   } else if (servoPosition == 180) {
     Serial.print(true);
