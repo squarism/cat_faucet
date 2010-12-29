@@ -1,6 +1,8 @@
 class House
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Versioning
+  max_versions 100
   
   field :name                 # friendly name
   embeds_many :sinks          # sink / faucet states

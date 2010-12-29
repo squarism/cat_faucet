@@ -39,22 +39,21 @@ class SinksController < ApplicationController
               sink["running"] = json_request["running"]
               puts "saving"
               sink.save
+              house.save
               render :text => "Saved JSON serial to DB."
             else
               # TODO: logger here instead
               # throw a 400 bad request response
               render :text => "Name incorrect in DB.  Please correct in DB or re-register sensor.", :status => 400
             end
-  
+            
           else
             # TODO: logger here instead
             # throw a 400 bad request response
             render :text => "Sensor name incorrect in JSON.", :status => 400
           end
-
           
         end
-
       }
       
       format.html {

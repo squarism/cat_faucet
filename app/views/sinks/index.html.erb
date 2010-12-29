@@ -5,3 +5,16 @@
 	<li>Proximity: <%= @basement_sink.proximity %></li>
 	<li>Running: <%= @basement_sink.running %></li>
 </ul>
+
+<h1>History</h1>
+<% @house.versions.each do |house_history| %>
+	Name:
+	<%= house_history.sinks.first.name%> <br>
+	Updated:
+	<%= house_history.sinks.first.updated_at%><br>
+	Running:
+	<%= house_history.sinks.first.running%><br>
+	Proximity:
+	<%= house_history.sinks.first.proximity%><br>
+	<hr>
+<% end %>
