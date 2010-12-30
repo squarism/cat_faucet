@@ -1,6 +1,9 @@
 source 'http://rubygems.org'
 
+# The following gems are required to run this app
 gem 'rails', '3.0.3'
+gem "mongoid", "2.0.0.beta.20"
+gem "bson_ext", "1.1.4"
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -30,11 +33,17 @@ gem 'rails', '3.0.3'
 #   gem 'webrat'
 # end
 
-gem "mongoid", "2.0.0.beta.20"
-gem "bson_ext", "1.1.4"
-
+# These gems are for development only
 group :development do
-  gem "wirble"
-  gem "hirb"
-  gem "awesome_print"
+	gem "wirble"
+	gem "hirb"
+	gem "awesome_print"
+	#gem "rspec-rails", "~> 2.3.0"
+	gem "watchr"
+	gem "webrat"
+end
+
+group :test do
+	gem "rspec-rails"
+	gem "mongoid-rspec", :require => false
 end
