@@ -1,7 +1,9 @@
 Smarthome::Application.routes.draw do
-  get "sensors/register"
 
-  get "sensors/unregister"
+  # for testing only
+  get "sinks/fake"
+  
+  
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

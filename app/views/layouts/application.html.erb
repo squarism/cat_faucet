@@ -14,7 +14,13 @@
 			<%= link_to "Home", :root %>
 			<%= link_to "Sinks", sinks_path %>
 			<%= link_to "Sensors", sensors_path %>
+			<%= link_to "Fake Sensor Message", :controller => 'sinks', :action => 'fake' %>
 		</div>
+
+		<% if alert %>
+			<p id="error"><%= alert %></p>
+		<% end %>
+
 
 		<% if notice %>
 			<p id="notice"><%= notice %></p>

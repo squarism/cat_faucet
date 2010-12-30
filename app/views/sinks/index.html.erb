@@ -1,4 +1,6 @@
-<h1>Quick List</h1>
+<h1>Sinks</h1>
+
+<% if !@basement_sink.nil? %>
 
 <ul>
 	<li>Name: <%= @basement_sink.name %></li>
@@ -17,4 +19,10 @@
 	Proximity:
 	<%= house_history.sinks.first.proximity%><br>
 	<hr>
+<% end %>
+
+<% else %>
+
+	No data.  Register a sensor and let a sensor run.
+
 <% end %>
