@@ -1,5 +1,6 @@
 class Sink
   include Mongoid::Document
+  include Mongoid::Timestamps
   
   validates_uniqueness_of :name
   
