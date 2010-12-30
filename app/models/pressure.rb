@@ -5,5 +5,5 @@ class Pressure
   field :name, :type => String
   field :proximity, :type => Boolean
   field :reading, :type => Float
-  embedded_in :house, :inverse_of => :pressure
+  #embedded_in :house, :inverse_of => :pressure
 end

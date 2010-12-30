@@ -5,5 +5,5 @@ class Temperature
   field :name, :type => String
   field :units, :type => String
   field :reading, :type => Float
-  embedded_in :house, :inverse_of => :temperature
+  #embedded_in :house, :inverse_of => :temperature
 end

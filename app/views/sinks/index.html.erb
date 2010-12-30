@@ -9,16 +9,21 @@
 </ul>
 
 <h1>History</h1>
-<% @house.versions.each do |house_history| %>
-	Name:
-	<%= house_history.sinks.first.name%> <br>
-	Updated:
-	<%= house_history.sinks.first.updated_at%><br>
-	Running:
-	<%= house_history.sinks.first.running%><br>
-	Proximity:
-	<%= house_history.sinks.first.proximity%><br>
-	<hr>
+<% @sinks.each do |sink| %>
+	<% sink.versions.each do |sink_history| %>
+		<hr>
+	
+		Name:
+		<%= sink_history.name%> <br>
+		Created:
+		<%= sink_history.created_at%><br>
+		Updated:
+		<%= sink_history.updated_at%><br>
+		Running:
+		<%= sink_history.running%><br>
+		Proximity:
+		<%= sink_history.proximity%><br>
+	<% end %>
 <% end %>
 
 <% else %>

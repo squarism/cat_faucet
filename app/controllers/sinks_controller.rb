@@ -32,21 +32,13 @@ class SinksController < ApplicationController
   end
   
   def index
-    @house = House.first
-    
-    if @house
-      @sinks = @house.sinks
-      @basement_sink = @sinks.where(:name => "basement").first
-    end
+    @sinks = Sink.all
+    @basement_sink = @sinks.where(:name => "basement").first
   end
   
   def map_json(json_request)
     # if we received a metric data point, save it to the db
     if json_request["type"] == "metric"
-      
-      # create or get our house object
-      # TODO: conf file for Strings here instead of "Dillon"
-      house = House.find_or_create_by(:name => "Dillon House")
       
       # sanity check
       sensor = ""
@@ -61,25 +53,18 @@ class SinksController < ApplicationController
           registered_sink = Sensor.where(:name => sensor_name).first
                     
           # uses sanity check in send for generic code
-          #sink = house.send(sensor).where(:name => json_request["name"]).first
           if !registered_sink.nil?
 
-            # first time sensor has been saved  
-            sink = house.sinks.where( { :name => sensor_name } ).first
-                      
-            if sink.nil?
-              sink = house.sinks.create(:name => sensor_name)
-              house.save
-            end
+            # find_or_initialize won't save the record now if this is the first sensor run
+            sink = Sink.find_or_initialize_by( { :name => sensor_name } )
 
             # update sensor
-            #sink = Sink.find(:first, :conditions => { :name => sensor_name } )
             sink["proximity"] = json_request["proximity"]
             sink["running"] = json_request["running"]
             sink.save
-            house.save
-            
-            render :text => "Saved JSON serial to DB."
+
+            # plain text output to console
+            #render :text => "Saved JSON serial to DB."
           else
             # TODO: logger here instead
             # throw a 400 bad request response in plain text because we're in json request
@@ -100,17 +85,19 @@ class SinksController < ApplicationController
   end
   
   def fake
-    #render :text => "This is a test URL for sending a fake sensor message."
     message = '{
        "sensor": "sinks",
        "name": "basement",
-       "proximity": "true",
+       "proximity": "false",
        "running": "true",
        "hash": "ED076287532E86365E841E92BFC50D8C",
        "type": "metric"
      }'
      json_request = JSON.parse(message)
      map_json json_request
+     
+     flash[:notice] = "Saved faked JSON serial to DB."
+     redirect_to sinks_path
   end
     
 end
