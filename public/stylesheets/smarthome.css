@@ -83,3 +83,29 @@ a:hover { color: #fff; background-color:#000; }
 	text-align: left;
 	width: 15em;
 }
+
+.left {
+	width: 300px;
+	text-align: left;
+	float: left;
+	padding-right: 2px;
+}
+
+.right {
+	width: 300px;
+	text-align: left;
+	float: right;
+	padding-left: 2px;
+}
+
+#history {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0em;
+	padding-bottom: 0em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+	text-align:left;
+	clear: both;
+	font: 13px Helvetica, Verdana, Arial, sans-serif;
+}

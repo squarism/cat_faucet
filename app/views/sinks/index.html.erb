@@ -1,33 +1,69 @@
 <h1>Sinks</h1>
 
-<% if !@basement_sink.nil? %>
+<% if !@sinks.nil? %>
 
-<ul>
-	<li>Name: <%= @basement_sink.name %></li>
-	<li>Proximity: <%= @basement_sink.proximity %></li>
-	<li>Running: <%= @basement_sink.running %></li>
-</ul>
-
-<h1>History</h1>
 <% @sinks.each do |sink| %>
-	<% sink.versions.each do |sink_history| %>
-		<hr>
-	
-		Name:
-		<%= sink_history.name%> <br>
-		Created:
-		<%= sink_history.created_at%><br>
-		Updated:
-		<%= sink_history.updated_at%><br>
-		Running:
-		<%= sink_history.running%><br>
-		Proximity:
-		<%= sink_history.proximity%><br>
+	<%= sink.name.capitalize %></strong>: 
+	<% if sink.running %> 
+		<font color='royalblue'>running</font> <%= image_tag("water_drop_16px.png") %>
+	<% else %>
+		<font color='gray'>off</font>
 	<% end %>
+	<br>
 <% end %>
 
-<% else %>
+<br>
 
-	No data.  Register a sensor and let a sensor run.
 
-<% end %>
+<div class="left" id="graph">
+	<h1>Time of Day</h1>
+	<%= image_tag 'graph_placeholder.jpg' %>
+</div>
+
+<div id="log">
+	<h1>Watering Log</h1>
+
+	<% @sinks.each do |sink| %>
+		<strong><%= sink.name %></strong><br>
+		
+		<!-- I can't figure out a cooler way to do this with scopes -->
+		<% running_sinks = sink.versions.find_all{ |v| v.running == true } %>
+		
+		<% running_sinks.each do |rs| %>
+			<%= format_log_date rs.updated_at %><br>
+		<% end %>
+		
+		
+		
+		<%# format_log_date Sink.first.updated_at %>
+	<% end %>
+</div>
+
+
+<div id="history">
+
+	<h1>History</h1>
+	<% @sinks.each do |sink| %>
+		<% sink.versions.each do |sink_history| %>
+			<hr>
+	
+			Name:
+			<%= sink_history.name%> <br>
+			Created:
+			<%= sink_history.created_at%><br>
+			Updated:
+			<%= sink_history.updated_at%><br>
+			Running:
+			<%= sink_history.running%><br>
+			Proximity:
+			<%= sink_history.proximity%><br>
+		<% end %>
+	<% end %>
+
+
+
+	<% else %>
+		No data.  Register a sensor and let a sensor run.
+	<% end %>
+
+</div>

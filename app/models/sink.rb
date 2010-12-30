@@ -7,5 +7,6 @@ class Sink
   
   field :running, :type => Boolean
   field :proximity, :type => Boolean
-
+  
 end
+
