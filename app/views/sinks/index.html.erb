@@ -5,7 +5,7 @@
 	<% @sinks.each do |sink| %>
 		<%= sink.name.capitalize %></strong>: 
 		<% if sink.running %> 
-			<font color='royalblue'>running</font> <%= image_tag("water_drop_16px.png") %>
+			<font color='royalblue'>running</font> <%= image_tag("water_drop_16px.png", :class => 'icon') %>
 		<% else %>
 			<font color='gray'>off</font>
 		<% end %>
@@ -16,7 +16,8 @@
 
 	<div class="left" id="graph">
 		<h1>Time of Day</h1>
-		<%= image_tag 'graph_placeholder.jpg' %>
+		<%# image_tag 'graph_placeholder.jpg' %>
+		<div id="sink-time-of-day" class="overview-graph"></div>
 	</div>
 
 	<div id="log">
@@ -60,3 +61,7 @@
 <% else %>
 	No data.  Register a sensor and let a sensor run.
 <% end %>
+
+<div id="debug">
+	<h2>Debug</h2>
+</div>
