@@ -2,68 +2,61 @@
 
 <% if !@sinks.nil? %>
 
-<% @sinks.each do |sink| %>
-	<%= sink.name.capitalize %></strong>: 
-	<% if sink.running %> 
-		<font color='royalblue'>running</font> <%= image_tag("water_drop_16px.png") %>
-	<% else %>
-		<font color='gray'>off</font>
-	<% end %>
-	<br>
-<% end %>
-
-<br>
-
-
-<div class="left" id="graph">
-	<h1>Time of Day</h1>
-	<%= image_tag 'graph_placeholder.jpg' %>
-</div>
-
-<div id="log">
-	<h1>Watering Log</h1>
-
 	<% @sinks.each do |sink| %>
-		<strong><%= sink.name %></strong><br>
-		
-		<!-- I can't figure out a cooler way to do this with scopes -->
-		<% running_sinks = sink.versions.find_all{ |v| v.running == true } %>
-		
-		<% running_sinks.each do |rs| %>
-			<%= format_log_date rs.updated_at %><br>
+		<%= sink.name.capitalize %></strong>: 
+		<% if sink.running %> 
+			<font color='royalblue'>running</font> <%= image_tag("water_drop_16px.png") %>
+		<% else %>
+			<font color='gray'>off</font>
 		<% end %>
-		
-		
-		
-		<%# format_log_date Sink.first.updated_at %>
+		<br>
 	<% end %>
-</div>
-
-
-<div id="history">
-
-	<h1>History</h1>
-	<% @sinks.each do |sink| %>
-		<% sink.versions.each do |sink_history| %>
-			<hr>
 	
-			Name:
-			<%= sink_history.name%> <br>
-			Created:
-			<%= sink_history.created_at%><br>
-			Updated:
-			<%= sink_history.updated_at%><br>
-			Running:
-			<%= sink_history.running%><br>
-			Proximity:
-			<%= sink_history.proximity%><br>
+	<br>
+
+	<div class="left" id="graph">
+		<h1>Time of Day</h1>
+		<%= image_tag 'graph_placeholder.jpg' %>
+	</div>
+
+	<div id="log">
+		<h1>Watering Log</h1>
+
+		<% @sinks.each do |sink| %>
+			<strong><%= sink.name %></strong><br>
+		
+			<!-- I can't figure out a cooler way to do this with scopes -->
+			<% running_sinks = sink.versions.find_all{ |v| v.running == true } %>
+		
+			<% running_sinks.each do |rs| %>
+				<%= format_log_date rs.updated_at %><br>
+			<% end %>
+
+			<%# format_log_date Sink.first.updated_at %>
 		<% end %>
-	<% end %>
+	</div>
 
+	<div id="history">
 
+		<h1>History</h1>
+		<% @sinks.each do |sink| %>
+			<% sink.versions.each do |sink_history| %>
+				<hr>
+	
+				Name:
+				<%= sink_history.name%> <br>
+				Created:
+				<%= sink_history.created_at%><br>
+				Updated:
+				<%= sink_history.updated_at%><br>
+				Running:
+				<%= sink_history.running%><br>
+				Proximity:
+				<%= sink_history.proximity%><br>
+			<% end %>
+		<% end %>
+	</div>
 
-	<% else %>
-		No data.  Register a sensor and let a sensor run.
-	<% end %>
-
-</div>
+<% else %>
+	No data.  Register a sensor and let a sensor run.
+<% end %>

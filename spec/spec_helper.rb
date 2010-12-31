@@ -26,4 +26,10 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   #config.use_transactional_fixtures = true
+  
+  # Clean up no matter what
+  config.after(:each) do  
+    Mongoid.master.collections.select { |c| c.name != 'system.indexes' }.each(&:drop)  
+  end
+    
 end

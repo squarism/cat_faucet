@@ -59,6 +59,7 @@ class SinksController < ApplicationController
             sink = Sink.find_or_initialize_by( { :name => sensor_name } )
 
             # update sensor
+            sink.collected_at = Time.new
             sink["proximity"] = json_request["proximity"]
             sink["running"] = json_request["running"]
             sink.save
