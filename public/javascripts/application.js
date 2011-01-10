@@ -7,8 +7,46 @@ function log(s) {
 
 
 $(document).ready(function() {
+	var placeholder = $('#sink-time-of-day');
+	var dataurl = '/sinks/json.js'
+	var data = [];
 	
-	$.plot($("#sink-time-of-day"), [
+	/*
+	var options = {
+		series: {
+            lines: { show: false },
+            points: { show: false }
+        },
+		xaxis: {
+			ticks: 12,
+			min: 0,
+			max: 24
+		},
+		yaxis: {
+			
+		},
+		grid: {
+			hoverable: true,
+			backgroundColor: { colors: ["#fff", "#eee"] }
+		}
+    };
+	*/
+	
+	
+	var options = {
+	        bars: { show: true },
+	        points: { show: false },
+	        xaxis: { tickDecimals: 0, tickSize: 2 },
+			yaxis: { min: 0, max: 100 },
+	    };
+	
+	
+
+	$.plot(placeholder, data, options);
+	
+	
+	/*
+	$.plot(placeholder, [
 		{
 			label: "Beaker",
 			data: [[0,3], [4,8], [8.5], [23,43]],
@@ -31,14 +69,30 @@ $(document).ready(function() {
 				backgroundColor: { colors: ["#fff", "#eee"] }
 			}
 	});
+	*/
 	
-	// test DOM append and jquery
-	if ($('img').length > 0) {
-		log('jquery test: we found more than zero images');
-	} else {
-		log('not enough imgs');
+	
+	function onDataReceived(series) {
+		// hardcoded test
+		//data = [ { label: 'JS Hardcoded', data: [ [1999, 3.0], [2000, 3.9], [2001,2.5] ] } ];
+		
+		// data from AJAX call
+		data = [ series ];
+
+		// plot data
+		$.plot(placeholder, data, options);
 	}
 	
+	// get flot data
+	$.ajax({
+		url: dataurl,
+		method: 'GET',
+		dataType: 'json',
+		success: onDataReceived
+	});
+	
+	
+	// flot tooltip
 	function showTooltip(x, y, contents) {
 	        $('<div id="tooltip">' + contents + '</div>').css( {
 	            position: 'absolute',
@@ -53,7 +107,7 @@ $(document).ready(function() {
 	    }
 	
 	var previousPoint = null;
-	    $("#sink-time-of-day").bind("plothover", function (event, pos, item) {
+	    placeholder.bind("plothover", function (event, pos, item) {
 	        $("#x").text(pos.x.toFixed(0));
 	        $("#y").text(pos.y.toFixed(0));
 
@@ -76,6 +130,15 @@ $(document).ready(function() {
 	            }
 	        }
 	    });
+
+
+	
+	// test DOM append and jquery
+	if ($('img').length > 0) {
+		log('jquery test: we found more than zero images');
+	} else {
+		log('not enough imgs');
+	}
 	
 
 	

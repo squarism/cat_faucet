@@ -11,7 +11,6 @@ class SinksController < ApplicationController
     end
   end
   
-  
   # we should handle the create/update here for simplicity
   def create
     
@@ -100,5 +99,24 @@ class SinksController < ApplicationController
      flash[:notice] = "Saved faked JSON serial to DB."
      redirect_to sinks_path
   end
-    
+  
+  # json data for flot graph
+  def json    
+    respond_to do |format|
+
+      format.js {
+        # this is very touchy on the flot client side
+        json = JSON.generate({ label: 'JS from rails', data: [ [0, 32], [17, 60], [22, 4], [23, 4] ] })
+        render :json => json
+      }
+
+      format.html {
+        [[0,3], [4,8], [8.5], [23,43]].to_json
+        #render :text => "hey json"
+        render :text => "<pre>#{json_string.to_json}</pre>", :content_type => 'text/html'
+      }
+      
+    end
+  end
+
 end

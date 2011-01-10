@@ -38,7 +38,7 @@ class SensorsController < ApplicationController
   
   def edit
   end
-  
+    
   def new
     @sensor = Sensor.new
   end

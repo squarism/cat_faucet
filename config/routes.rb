@@ -1,7 +1,8 @@
 Smarthome::Application.routes.draw do
 
   # for testing only
-  get "sinks/fake"  
+  get "sinks/fake"
+  get "sinks/json"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
