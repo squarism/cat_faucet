@@ -32,7 +32,6 @@ class SinksController < ApplicationController
   
   def index
     @sinks = Sink.all
-    @basement_sink = @sinks.where(:name => "basement").first
   end
   
   def map_json(json_request)
@@ -104,16 +103,20 @@ class SinksController < ApplicationController
   def json    
     respond_to do |format|
 
+      @sink = Sink.find(params[:id])
+      
+      json = JSON.generate({ label: @sink.name.capitalize, data: @sink.plot_by_hours })
+
       format.js {
         # this is very touchy on the flot client side
-        json = JSON.generate({ label: 'JS from rails', data: [ [0, 32], [17, 60], [22, 4], [23, 4] ] })
+        
         render :json => json
       }
 
       format.html {
         [[0,3], [4,8], [8.5], [23,43]].to_json
         #render :text => "hey json"
-        render :text => "<pre>#{json_string.to_json}</pre>", :content_type => 'text/html'
+        render :text => "<pre>#{json.to_json}</pre>", :content_type => 'text/html'
       }
       
     end

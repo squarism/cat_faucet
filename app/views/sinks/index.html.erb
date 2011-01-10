@@ -20,7 +20,7 @@
 		<div id="sink-time-of-day" class="overview-graph"></div>
 	</div>
 
-	<div id="log">
+	<div class="center" id="log">
 		<h1>Watering Log</h1>
 
 		<% @sinks.each do |sink| %>
@@ -37,31 +37,6 @@
 		<% end %>
 	</div>
 
-	<div id="history">
-
-		<h1>History</h1>
-		<% @sinks.each do |sink| %>
-			<% sink.versions.each do |sink_history| %>
-				<hr>
-	
-				Name:
-				<%= sink_history.name%> <br>
-				Created:
-				<%= sink_history.created_at%><br>
-				Updated:
-				<%= sink_history.updated_at%><br>
-				Running:
-				<%= sink_history.running%><br>
-				Proximity:
-				<%= sink_history.proximity%><br>
-			<% end %>
-		<% end %>
-	</div>
-
 <% else %>
 	No data.  Register a sensor and let a sensor run.
 <% end %>
-
-<div id="debug">
-	<h2>Debug</h2>
-</div>

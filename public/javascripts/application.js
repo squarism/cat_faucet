@@ -8,41 +8,23 @@ function log(s) {
 
 $(document).ready(function() {
 	var placeholder = $('#sink-time-of-day');
-	var dataurl = '/sinks/json.js'
+	var dataurl = '/sinks/json/4d1d16392e1ad45863000001'
 	var data = [];
-	
-	/*
-	var options = {
-		series: {
-            lines: { show: false },
-            points: { show: false }
-        },
-		xaxis: {
-			ticks: 12,
-			min: 0,
-			max: 24
-		},
-		yaxis: {
-			
-		},
-		grid: {
-			hoverable: true,
-			backgroundColor: { colors: ["#fff", "#eee"] }
-		}
-    };
-	*/
-	
 	
 	var options = {
 	        bars: { show: true },
 	        points: { show: false },
-	        xaxis: { tickDecimals: 0, tickSize: 2 },
+	        xaxis: { ticks: 12, tickDecimals: 0, tickSize: 2, min: 0, max: 24 },
 			yaxis: { min: 0, max: 100 },
+			grid: {
+				hoverable: true,
+				backgroundColor: { colors: ["#fff", "#eee"] }
+			}
 	    };
 	
 	
-
-	$.plot(placeholder, data, options);
+	// shouldn't have to plot here because we have no data yet.
+	//$.plot(placeholder, data, options);
 	
 	
 	/*
@@ -121,7 +103,7 @@ $(document).ready(function() {
 	                        y = item.datapoint[1].toFixed(0);
 
 	                    showTooltip(item.pageX, item.pageY,
-	                                item.series.label + " drinks at " + x + ":00 " + y + "% of the time.");
+	                                "Drinks at " + x + ":00 " + y + "% of the time.");
 	                }
 	            }
 	            else {
@@ -130,16 +112,5 @@ $(document).ready(function() {
 	            }
 	        }
 	    });
-
-
-	
-	// test DOM append and jquery
-	if ($('img').length > 0) {
-		log('jquery test: we found more than zero images');
-	} else {
-		log('not enough imgs');
-	}
-	
-
 	
 });

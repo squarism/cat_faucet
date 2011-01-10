@@ -98,6 +98,11 @@ a:hover { color: #fff; background-color:#000; }
 	padding-left: 2px;
 }
 
+.center {
+	float: center;
+	clear: both;
+}
+
 #history {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
@@ -111,6 +116,8 @@ a:hover { color: #fff; background-color:#000; }
 }
 
 .overview-graph {
-	width: 350px;
+	width: 650px;
 	height: 150px;
+	margin-bottom: 1.5em;
+	padding-left: 0.5em;
 }
