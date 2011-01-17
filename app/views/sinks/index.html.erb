@@ -1,3 +1,7 @@
+<% content_for :javascript_includes do %>
+  <%= javascript_include_tag "sinks.js" %>
+<% end %>
+
 <h1>Sinks</h1>
 
 <% if !@sinks.nil? %>
@@ -17,7 +21,10 @@
 	<div class="left" id="graph">
 		<h1>Time of Day</h1>
 		<%# image_tag 'graph_placeholder.jpg' %>
-		<div id="sink-time-of-day" class="overview-graph"></div>
+		<% @sinks.each do |sink| %>
+			<div id="<%=sink.id%>" class="overview-graph"></div>
+		<% end %>
+		<!--<div id="sink-time-of-day" style="width: 650px; height: 150px; margin-bottom: 1.5em; padding-left: 0.5em;"></div>-->
 	</div>
 
 	<div class="center" id="log">
@@ -26,11 +33,14 @@
 		<% @sinks.each do |sink| %>
 			<strong><%= sink.name %></strong><br>
 		
+			<em><%= format_log_date sink.collected_at %></em><br>
+			
 			<!-- I can't figure out a cooler way to do this with scopes -->
 			<% running_sinks = sink.versions.find_all{ |v| v.running == true } %>
+			<% running_sinks.reverse! %>
 		
 			<% running_sinks.each do |rs| %>
-				<%= format_log_date rs.updated_at %><br>
+				<%= format_log_date rs.collected_at %><br>
 			<% end %>
 
 			<%# format_log_date Sink.first.updated_at %>
