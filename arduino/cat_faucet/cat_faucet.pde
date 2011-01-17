@@ -109,13 +109,14 @@ void loop() {
         
         // we need to overshoot this when turning on the faucet
         // this is all calibration work with the physical qualities of the handle
-        servo.write(120);
+
+        servo.write(115);
         delay(50);    // wait for servo
-        servo.write(100);
+        servo.write(107);
         delay(50);
         servo.write(110);
         delay(50);
-        
+                
         servoPosition = 110;
         sendJSON();
       }
@@ -139,17 +140,29 @@ void loop() {
       if (servoPosition != 90) {
         // go a little beyond and then come back to keep servo from buzzing when at rest.
         // this is all calibration work.
-        servo.write(20);
-        delay(100);  // wait for servo
-        servo.write(30);
-        delay(50);
-        servo.write(80);
-        delay(50);        
-        servo.write(90);
-        delay(50);
-        servo.write(80);
-        delay(50);
         
+        //servo.write(20);
+        //delay(100);  // wait for servo
+        //servo.write(30);
+        //delay(50);
+
+        // still buzzing here but closer
+        // servo.write(72);
+        // delay(50);        
+        // servo.write(85);
+        // delay(50);
+        // servo.write(84);
+        // delay(50);
+
+        // attempt #3 -- seems to work
+        servo.write(75);
+        delay(250);
+        servo.write(95);
+        delay(250);
+        servo.write(90);
+        delay(250);
+
+                
         servoPosition = 90;
         sendJSON();
       }
