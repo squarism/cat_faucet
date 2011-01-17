@@ -4,6 +4,7 @@
   <title>Smarthome</title>
   <%= stylesheet_link_tag 'smarthome' %>
   <%= javascript_include_tag 'jquery-1.4.4', 'jquery.flot.js', 'application' %>
+  <%= yield :javascript_includes %>
   <%= csrf_meta_tag %>
 </head>
 <body>
