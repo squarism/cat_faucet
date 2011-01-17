@@ -233,9 +233,9 @@ void sendJSON() {
   Serial.println("\",");
 
   Serial.print("\t\"running\": \"");
-  if (servoPosition == 110) {
+  if (servoPosition == 90) {
     Serial.print(false);
-  } else if (servoPosition == 180) {
+  } else if (servoPosition == 110) {
     Serial.print(true);
   } else {
     Serial.print("UNKNOWN");
