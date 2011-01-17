@@ -33,11 +33,14 @@
 		<% @sinks.each do |sink| %>
 			<strong><%= sink.name %></strong><br>
 		
+			<em><%= format_log_date sink.collected_at %></em><br>
+			
 			<!-- I can't figure out a cooler way to do this with scopes -->
 			<% running_sinks = sink.versions.find_all{ |v| v.running == true } %>
+			<% running_sinks.reverse! %>
 		
 			<% running_sinks.each do |rs| %>
-				<%= format_log_date rs.updated_at %><br>
+				<%= format_log_date rs.collected_at %><br>
 			<% end %>
 
 			<%# format_log_date Sink.first.updated_at %>

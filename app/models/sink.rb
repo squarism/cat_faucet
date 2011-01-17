@@ -14,7 +14,10 @@ class Sink
     
     # count up our hours
     self.versions.each do |v|
-      hours_hash[v.collected_at.hour] += 1
+      # we only care about when the sink is running to count cat drinking
+      if v.running == true
+        hours_hash[v.collected_at.hour] += 1
+      end
     end
     
     hours_hash[self.collected_at.hour] += 1
