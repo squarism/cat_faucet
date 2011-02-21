@@ -21,7 +21,11 @@ stop_bits = 1
 parity = SerialPort::NONE
 
 # Variables for scope reasons
+# TODO: handle Errno::ENOENT if /dev path is wrong
+# TODO: print list of available USB devices
 sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
+puts "Opened serial port."
+
 start_json = false
 json_buffer = ""
 json_object = ""
@@ -50,7 +54,7 @@ def post_json(url, input_json)
   puts "Response #{response.code} #{response.message}: #{response.body}"  
 end
 
-
+puts "Listening with XBee ..."
 
 # Reads from serial and tries to make a JSON string
 # NOTE: This is severely limited in that it can't do nested JSON {} brackets inside
@@ -141,5 +145,5 @@ while true do
   
 end
 
-sp.close                       #see note 1
+sp.close #see note 1
 
