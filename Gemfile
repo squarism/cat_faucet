@@ -1,9 +1,9 @@
 source 'http://rubygems.org'
 
 # The following gems are required to run this app
-gem 'rails', '3.0.3'
-gem "mongoid", "2.0.0.beta.20"
-gem "bson_ext", "1.1.4"
+gem 'rails', '~> 3.0.4'
+gem "mongoid", "~> 2.0.0.rc.5"
+gem "bson_ext", "~> 1.2.2"
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
