@@ -56,8 +56,7 @@ void setup()
 {
   // initialize serial communication with XBee:
   Serial.begin(9600);
-  //delay(2000);
-  Serial.println("Starting ...");
+  //Serial.println("Starting ...");
   
   // attaches the servo on pin 9 to the servo object
   servo.attach(9);
@@ -155,11 +154,9 @@ void loop() {
         // delay(50);
 
         // attempt #3 -- seems to work
-        servo.write(75);
+        servo.write(72);
         delay(250);
-        servo.write(95);
-        delay(250);
-        servo.write(90);
+        servo.write(80);
         delay(250);
 
                 
@@ -234,9 +231,9 @@ void sendJSON() {
 
   Serial.print("\t\"running\": \"");
   if (servoPosition == 90) {
-    Serial.print(false);
+    Serial.print("false");
   } else if (servoPosition == 110) {
-    Serial.print(true);
+    Serial.print("true");
   } else {
     Serial.print("UNKNOWN");
   }
