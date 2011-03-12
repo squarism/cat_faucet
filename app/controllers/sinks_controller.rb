@@ -18,7 +18,11 @@ class SinksController < ApplicationController
       format.json {
         # parse our body, werk the body
         json_request = JSON.parse(request.body.read)
-        map_json json_request 
+        if(map_json json_request)
+          render :text => "Mapped JSON: #{json_request}"
+        else
+          render :text => "Problem mapping JSON: #{json_request}"
+        end
       }
       
       format.html {
@@ -35,6 +39,8 @@ class SinksController < ApplicationController
   end
   
   def map_json(json_request)
+    puts json_request
+    
     # if we received a metric data point, save it to the db
     if json_request["type"] == "metric"
       
@@ -43,7 +49,6 @@ class SinksController < ApplicationController
       if SENSOR_TYPES.include?(json_request["sensor"])
         sensor = json_request["sensor"]
         sensor_name = json_request["name"]
-        puts "!!!!! #{sensor_name}"
         
         # mapper
         case sensor
@@ -120,6 +125,12 @@ class SinksController < ApplicationController
       }
       
     end
+  end
+  
+  # mongoid 2.0.0.rc.5 fixed deleting versions from 2.0.0.beta.20
+  def delete_version(sink, id)
+    sink = Sink.first
+    sink.versions.where(:version => 3).destroy_all
   end
 
 end

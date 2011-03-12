@@ -37,5 +37,11 @@ class Sink
     hours_percentage.to_a    
   end
   
+  # move first version to current record
+  def rollback(versions)
+    
+  end
+    
+  
 end
 

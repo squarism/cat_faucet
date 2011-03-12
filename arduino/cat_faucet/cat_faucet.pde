@@ -56,7 +56,8 @@ void setup()
 {
   // initialize serial communication with XBee:
   Serial.begin(9600);
-  //Serial.println("Starting ...");
+  //delay(2000);
+  Serial.println("Starting ...");
   
   // attaches the servo on pin 9 to the servo object
   servo.attach(9);
@@ -109,13 +110,27 @@ void loop() {
         // we need to overshoot this when turning on the faucet
         // this is all calibration work with the physical qualities of the handle
 
-        servo.write(115);
-        delay(50);    // wait for servo
-        servo.write(107);
-        delay(50);
+        // buzzes while on
+        //servo.write(135);
+        //delay(250);    // wait for servo
+        //servo.write(85);
+        //delay(250);
+        //servo.write(110);
+        //delay(250);
+
+
+        servo.attach(9);
+        
+        servo.write(165);
+        delay(250);    // wait for servo
+        servo.write(105);
+        delay(250);
         servo.write(110);
-        delay(50);
-                
+        delay(250);
+        servo.write(105);
+        
+        servo.detach();
+        
         servoPosition = 110;
         sendJSON();
       }
@@ -153,12 +168,17 @@ void loop() {
         // servo.write(84);
         // delay(50);
 
+        servo.attach(9);
+        
         // attempt #3 -- seems to work
-        servo.write(72);
+        servo.write(75);
         delay(250);
-        servo.write(80);
+        servo.write(90);
         delay(250);
-
+        servo.write(85);
+        delay(250);
+        
+        servo.detach();
                 
         servoPosition = 90;
         sendJSON();
@@ -231,9 +251,9 @@ void sendJSON() {
 
   Serial.print("\t\"running\": \"");
   if (servoPosition == 90) {
-    Serial.print("false");
+    Serial.print(false);
   } else if (servoPosition == 110) {
-    Serial.print("true");
+    Serial.print(true);
   } else {
     Serial.print("UNKNOWN");
   }

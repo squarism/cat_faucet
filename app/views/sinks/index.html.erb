@@ -33,7 +33,6 @@
 		<% @sinks.each do |sink| %>
 			<strong><%= sink.name %></strong><br>
 		
-			<em><%= format_log_date sink.collected_at %></em><br>
 			<% if sink.running == true %>
 				<em><%= format_log_date sink.collected_at%></em><br>
 			<% end %>
@@ -43,7 +42,9 @@
 			<% running_sinks.reverse! %>
 		
 			<% running_sinks.each do |rs| %>
-				<%= format_log_date rs.collected_at %><br>
+				<%= format_log_date rs.collected_at %>
+				<%# link_to 'delete', edit_sink_version_path(rs), :method => 'delete' %>
+				<br>
 			<% end %>
 
 			<%# format_log_date Sink.first.updated_at %>

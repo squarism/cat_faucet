@@ -17,7 +17,10 @@ Smarthome::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-  resources :sinks
+  resources :sinks do
+    resources :versions
+  end
+  
   resources :sensors
 
   # Sample resource route with options:
