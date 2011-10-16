@@ -1,5 +1,5 @@
 #include <VarSpeedServo.h>
-#include <md5.h>
+//#include <md5.h>
 
 /*
  Detect a cat with an IR sensor and move a Servo.
@@ -13,8 +13,8 @@
  This code is in the public domain.
  */
  
-MD5 md5Hasher;
-md5_hash_t destination; // Create an array to hold the hash; md5_hash_t is defined as uint8_t[16] in the header.
+//MD5 md5Hasher;
+//md5_hash_t destination; // Create an array to hold the hash; md5_hash_t is defined as uint8_t[16] in the header.
 
 String sensor = "sinks";
 String name = "basement";
@@ -26,9 +26,9 @@ char str[32];
  
 
 // servo constants, ajust for sink handle and desired water speed
-const int ON_POSITION = 105;
-const int OFF_POSITION = 85;
-const int SERVO_SPEED = 10;    // from VarSpeedServo library (thx Korman)
+const int ON_POSITION = 110;
+const int OFF_POSITION = 75;
+const int SERVO_SPEED = 12;    // from VarSpeedServo library (thx Korman)
 
 VarSpeedServo servo;  // create servo object to control a servo
 
@@ -80,7 +80,7 @@ void setup()
 void move(int position) {  
   servo.attach(9);      // servo is off to negate buzzing, need to attach to pin "turn it on" again
   servo.slowmove(position, SERVO_SPEED);
-  delay(1500);          // wait for servo, this is ABSOLUTELY NECCESSARY
+  delay(2000);          // wait for servo, this is ABSOLUTELY NECCESSARY
   servo.detach();       // avoid buzzing and excessive movement
   servoPosition = position;
 }
@@ -161,6 +161,8 @@ boolean isLongEnough() {
   }
 }
 
+// this keeps bugging out when called mulitple times during runtime
+// probably due to the MD5 crap, not because of the Xbee/USB serial jumper
 void sendJSON() {
   // example JSON message
   /*
@@ -175,23 +177,24 @@ void sendJSON() {
   */
   
   // create a buffer for our MD5 hash
-  //sBuffer = "";
-  sensorTemp = "";
-  sensorTemp += sensor;
-  sensorTemp += " ";
-  sensorTemp += name;
+//  sBuffer = "";
+//  sensorTemp = "";
+//  sensorTemp += sensor;
+//  sensorTemp += " ";
+//  sensorTemp += name;
 
   // pad it up, only way I could get this goddamn string concat to work
-  sensorTempSize = sizeof(sensor) + 3 + sizeof(name);
-  char buf[sensorTempSize];
-  sensorTemp.toCharArray(buf, sensorTempSize);
+//  sensorTempSize = sizeof(sensor) + 3 + sizeof(name);
+//  char buf[sensorTempSize];
+//  sensorTemp.toCharArray(buf, sensorTempSize);
   
   Serial.println("{");
   Serial.println("\t\"sensor\": \"" + sensor + "\",");
   Serial.println("\t\"name\": \"" + name + "\",");
   
   Serial.print("\t\"hash\": \"");
-  Serial.print(hash(buf));
+  Serial.print("nohash");
+//  Serial.print(hash(buf));
   Serial.println("\",");
   
   Serial.print("\t\"proximity\": \"");
@@ -214,19 +217,19 @@ void sendJSON() {
   // memory test for debugging
   //Serial.println(memoryTest());
   
-  //delay(1000);
+  delay(250);
 }
 
 String hash(char *string) {
   // Calling the ComputeHash method will generate the hash for the string.
   // It fills the destination variable with a byte array.
-  md5Hasher.ComputeHash(&destination, string);
+//  md5Hasher.ComputeHash(&destination, string);
 	
   // Calling the static ToHexString method will allow you to convert this byte array to a string.
   // This is primarily for debugging.
   //char str[32];
   
-  MD5::ToHexString(destination, str);
+//  MD5::ToHexString(destination, str);
   //Serial.println(str);
   
   return String(str);
