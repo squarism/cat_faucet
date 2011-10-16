@@ -1,4 +1,4 @@
-#include <Servo.h>
+#include <VarSpeedServo.h>
 #include <md5.h>
 
 /*
@@ -24,7 +24,13 @@ int sensorTempSize = 0;
 
 char str[32];
  
-Servo servo;  // create servo object to control a servo 
+
+// servo constants, ajust for sink handle and desired water speed
+const int ON_POSITION = 105;
+const int OFF_POSITION = 85;
+const int SERVO_SPEED = 10;    // from VarSpeedServo library (thx Korman)
+
+VarSpeedServo servo;  // create servo object to control a servo
 
 // Define the number of samples to keep track of.  The higher the number,
 // the more the readings will be smoothed, but the slower the output will
@@ -70,6 +76,15 @@ void setup()
   time = millis();
 }
 
+// move goddamn servo
+void move(int position) {  
+  servo.attach(9);      // servo is off to negate buzzing, need to attach to pin "turn it on" again
+  servo.slowmove(position, SERVO_SPEED);
+  delay(1500);          // wait for servo, this is ABSOLUTELY NECCESSARY
+  servo.detach();       // avoid buzzing and excessive movement
+  servoPosition = position;
+}
+
 // run loop
 void loop() {
   // subtract the last reading:
@@ -99,44 +114,12 @@ void loop() {
     
     //Serial.println("on");
     if (isLongEnough()) {
-      
-      
-      // move facut to on position
-      //Serial.println("Turning Faucet Off.");
-      
-      // avoid excessive movement
-      if (servoPosition != 110) {
-        
-        // we need to overshoot this when turning on the faucet
-        // this is all calibration work with the physical qualities of the handle
-
-        // buzzes while on
-        //servo.write(135);
-        //delay(250);    // wait for servo
-        //servo.write(85);
-        //delay(250);
-        //servo.write(110);
-        //delay(250);
-
-
-        servo.attach(9);
-        
-        servo.write(165);
-        delay(250);    // wait for servo
-        servo.write(105);
-        delay(250);
-        servo.write(110);
-        delay(250);
-        servo.write(105);
-        
-        servo.detach();
-        
-        servoPosition = 110;
+      // move faucet to on position
+      if (servoPosition != ON_POSITION) {
+        //Serial.println("Turning Faucet On.");
+        move(ON_POSITION);
         sendJSON();
       }
-      
-      
-      
     }
   } 
   else {
@@ -146,46 +129,12 @@ void loop() {
     digitalWrite(13, LOW);
     
     if (isLongEnough()) {
-      
-      
       // move faucet to off position
-      //Serial.println("Turning Faucet On.");
-
-      if (servoPosition != 90) {
-        // go a little beyond and then come back to keep servo from buzzing when at rest.
-        // this is all calibration work.
-        
-        //servo.write(20);
-        //delay(100);  // wait for servo
-        //servo.write(30);
-        //delay(50);
-
-        // still buzzing here but closer
-        // servo.write(72);
-        // delay(50);        
-        // servo.write(85);
-        // delay(50);
-        // servo.write(84);
-        // delay(50);
-
-        servo.attach(9);
-        
-        // attempt #3 -- seems to work
-        servo.write(75);
-        delay(250);
-        servo.write(90);
-        delay(250);
-        servo.write(85);
-        delay(250);
-        
-        servo.detach();
-                
-        servoPosition = 90;
+      if (servoPosition != OFF_POSITION) {
+        //Serial.println("Turning Faucet Off.");
+        move(OFF_POSITION);
         sendJSON();
       }
-      
-      
-      
     }
   }
 
