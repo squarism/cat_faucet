@@ -9,8 +9,8 @@ require 'uri'
 require 'rubygems'
 
 # Parameters you should change
-port_str = "/dev/tty.usbserial-A9005bCr"  # may be different for you
-rails_url = "http://localhost:3000"       # customize if needed
+port_str = "/dev/ttyUSB0"  # may be different for you
+rails_url = "http://localhost:8000"       # customize if needed
 
 
 
@@ -54,8 +54,8 @@ def post_json(url, input_json)
   puts "Response #{response.code} #{response.message}: #{response.body}"  
 end
 
-puts "Listening with XBee ..."
 
+puts "Listening to serial port."
 # Reads from serial and tries to make a JSON string
 # NOTE: This is severely limited in that it can't do nested JSON {} brackets inside
 # brackets.  I have to read a byte at a time, so sue me.
@@ -67,7 +67,7 @@ while true do
     json_buffer = c
   else
     if c == "{" && start_json
-      raise IOError, "JSON opening bracket found before other closed."
+      #raise IOError, "JSON opening bracket found before other closed."
     end
     
     if c != "}"
@@ -114,13 +114,17 @@ while true do
       # 82c61d54a77d6a90219e4e40ce6c8440 = ruby
 
       # the local hash is in lowercase to start
-      if local_hash.upcase == hash.upcase
+      
+      # MD5 feature completely crashing Arduino after two movements.  MD5 is excessive load on the Arduino.
+      # So we'll just hardcode this for now and then remove it.
+      if hash.upcase == "NOHASH"
         puts "VALID: <#{type}>, proximity:#{proximity} running:#{running}"
         if !json_object["sensor"].nil?
 
           # ruby switch syntax  
           case json_object["sensor"]
           when "sinks"
+		puts "Posting to #{rails_url}/sinks/ --> #{json_object}"
             post_json("#{rails_url}/sinks/", json_object)
           when "pressure"
             post_json("#{rails_url}/pressures/", json_object)
@@ -139,11 +143,10 @@ while true do
       json_buffer = ""
       start_json = false
     elsif c == "}" && !start_json
-      raise IOError, "JSON opening bracket found before other closed."
+      # raise IOError, "JSON opening bracket found before other closed."
     end
   end  
   
 end
 
-sp.close #see note 1
-
+sp.close                       #see note 1
