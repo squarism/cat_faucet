@@ -43,6 +43,9 @@ const int numReadings = 10;
 // decrease if it takes too long for faucet to turn one when cat appears
 int detectWaitTime = 2000;
 
+// make faucet stay on longer when detected
+int stayOnTime = 60000;
+
 
 int readings[numReadings];      // the readings from the analog input
 int index = 0;                  // the index of the current reading
@@ -153,11 +156,18 @@ boolean isLongEnough() {
     // reset time to avoid overflow
     time = millis();
   }
-
-  if (millis() - time > detectWaitTime) {
-    return true;
+  
+  // make faucet stay on longer once triggered
+  if (servoPosition == ON_POSITION) {
+    if (millis() - time > stayOnTime) {
+      return true;
+    }
   } else {
-    return false;
+    if (millis() - time > detectWaitTime) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
