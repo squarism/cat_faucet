@@ -9,7 +9,7 @@ FnordMetric.namespace :cat_faucet do
 
   #gauge :events, :title => "Total Drinks"
   timeseries_gauge :number_of_drinks,
-    :group => "Beaker Activity",
+    :group => "Faucet Activity",
     :title => "Drink Count",
     #:key_nouns => ["Drinks", "Drink"],
     :series => [:drinks],
@@ -20,7 +20,7 @@ FnordMetric.namespace :cat_faucet do
 
 
   distribution_gauge :hour_activity,
-    :group => "Beaker Activity",
+    :group => "Faucet Activity",
     :title => "By Hour",
     # :value_ranges => (0..23).collect{|i| (i..i)},
     :precision => 0,
