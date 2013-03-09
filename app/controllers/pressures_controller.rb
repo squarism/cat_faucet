@@ -1,2 +1,0 @@
-class PressuresController < ApplicationController
-end
