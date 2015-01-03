@@ -33,25 +33,24 @@ json_object = ""
 
 # do JSON HTTP post to rails
 def post_json(url, input_json)
-  
   # we don't need the serial hash anymore so we
   # can reuse the serial json payload from the sensor
   input_json.delete "hash"
-  
+
   # parse our input url
   uri = URI.parse(url)
-  
-  # make a new request
-  req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' =>'application/json'})
 
-  
+  # make a new request
+  req = Net::HTTP::Post.new(uri.path, {'Content-Type' =>'application/json'})
+
+
   # have to format it as json again with .to_json to avoid a
   #   undefined method 'bytesize' for #<Hash: ...
   # error message.
   req.body = input_json.to_json
-  
+
   response = Net::HTTP.new(uri.host, uri.port).start {|http| http.request(req)}
-  puts "Response #{response.code} #{response.message}: #{response.body}"  
+  puts "Response #{response.code} #{response.message}: #{response.body}"
 end
 
 
@@ -66,25 +65,25 @@ while true do
     start_json = true
     json_buffer = c
   else
-    if c == "{" && start_json
-      #raise IOError, "JSON opening bracket found before other closed."
+    if c == "{"
+      # TODO: just return here instead of exiting the program.
+      # Weird serial messages are sent.  Arduino would send double messages on bootup.
     end
-    
+
     if c != "}"
       json_buffer += c
     end
-    
-    if c == "}" && start_json
+
+    if c == "}"
       json_buffer += c
       json_string = json_buffer
-      
+
       begin
         json_object = JSON.parse(json_string)
       rescue JSON::ParserError => e
         puts e.message
-      end      
-      
-      
+      end
+
       # example JSON message
       #  {
       #    "sensor": "sinks",
@@ -93,7 +92,7 @@ while true do
       #    "running": "true",
       #    "hash": "ED076287532E86365E841E92BFC50D8C",
       #    "type": "metric"
-      #  } 
+      #  }
 
       sensor = json_object['sensor']
       name = json_object['name']
@@ -101,27 +100,22 @@ while true do
       running = json_object['running']
       hash = json_object['hash']
       type = json_object['type']
-      
-      #puts "MESSAGE: #{message}"
-      #puts "HASH: #{hash}"
-      #puts "TYPE: #{type}"
-       
+
       # TODO: Hash whole JSON?  Improve this logic.  Only partially validates.
       # hash is "sensor name", ie: "sinks basement"
-      local_hash = Digest::MD5.hexdigest("#{sensor} #{name}")
-      #local_hash = Digest::MD5.hexdigest("sinks basement")
+      # the local hash is in lowercase to start
       # 82C61D54A77D6A90219E4E40CE6C8440 = arduino
       # 82c61d54a77d6a90219e4e40ce6c8440 = ruby
+      local_hash = Digest::MD5.hexdigest("#{sensor} #{name}")
 
-      # the local hash is in lowercase to start
-      
+
       # MD5 feature completely crashing Arduino after two movements.  MD5 is excessive load on the Arduino.
       # So we'll just hardcode this for now and then remove it.
       if hash.upcase == "NOHASH"
         puts "VALID: <#{type}>, proximity:#{proximity} running:#{running}"
         if !json_object["sensor"].nil?
 
-          # ruby switch syntax  
+          # ruby switch syntax
           case json_object["sensor"]
           when "sinks"
 		puts "Posting to #{rails_url}/sinks/ --> #{json_object}"
@@ -138,15 +132,15 @@ while true do
       else
         puts "#{local_hash} vs #{hash}"
       end
-      
+
       # clear everything for next loop
       json_buffer = ""
       start_json = false
     elsif c == "}" && !start_json
       # raise IOError, "JSON opening bracket found before other closed."
     end
-  end  
-  
+  end
+
 end
 
 sp.close                       #see note 1
