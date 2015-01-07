@@ -3,15 +3,15 @@
 /*
  Detect a cat with an IR sensor and move a Servo.
  Send status over serial/Xbee to a ruby script for a webservice call.
-  
+
  Chris Dillon - squarism.com
- 
+
  smoothing code taken from David A. Mellis <dam@mellis.org>
  http://www.arduino.cc/en/Tutorial/Smoothing
- 
+
  This code is in the public domain.
  */
- 
+
 String sensor = "sinks";
 String name = "basement";
 String sBuffer = "";
@@ -19,7 +19,7 @@ String sensorTemp = "";
 int sensorTempSize = 0;
 
 char str[32];
- 
+
 
 // servo constants, ajust for sink handle and desired water speed
 const int ON_POSITION = 110;
@@ -28,18 +28,22 @@ const int SERVO_SPEED = 12;    // from VarSpeedServo library (thx Korman)
 
 VarSpeedServo servo;  // create servo object to control a servo
 
-// Define the number of samples to keep track of.  The higher the number,
-// the more the readings will be smoothed, but the slower the output will
-// respond to the input.  Using a constant rather than a normal variable lets
-// use this value to determine the size of the readings array.
+/*
+ Define the number of samples to keep track of.  The higher the number,
+ the more the readings will be smoothed, but the slower the output will
+ respond to the input.  Using a constant rather than a normal variable lets
+ use this value to determine the size of the readings array.
+ */
 const int numReadings = 10;
 
-// number of milliseconds when detecting cat coming or going
-// increase this if faucet is finicky while cat drinks
-// decrease if it takes too long for faucet to turn one when cat appears
+/*
+ Number of milliseconds when detecting cat coming or going
+ increase this if faucet is finicky while cat drinks
+ decrease if it takes too long for faucet to turn one when cat appears
+ */
 int detectWaitTime = 2000;
 
-// make faucet stay on longer when detected
+// Make faucet stay on longer when detected.
 int stayOnTime = 60000;
 
 
@@ -56,17 +60,18 @@ unsigned long time;             // time counter for detectWaitTime
 
 int servoPosition;
 
-// init
+
+// Arduino boot up.
 void setup()
 {
   // initialize serial communication with XBee:
   Serial.begin(9600);
   Serial.println("Starting ...");
-  
+
   // attaches the servo on pin 9 to the servo object
   servo.attach(9);
   servoPosition = 0;
-  
+
   // initialize all the readings to 0:
   for (int thisReading = 0; thisReading < numReadings; thisReading++)
     readings[thisReading] = 0;
@@ -74,8 +79,9 @@ void setup()
   time = millis();
 }
 
-// move goddamn servo
-void move(int position) {  
+
+// Move the nice and friendly servo.
+void move(int position) {
   servo.attach(9);      // servo is off to negate buzzing, need to attach to pin "turn it on" again
   servo.slowmove(position, SERVO_SPEED);
   delay(2000);          // wait for servo, this is ABSOLUTELY NECCESSARY
@@ -83,41 +89,39 @@ void move(int position) {
   servoPosition = position;
 }
 
-// run loop
+
+// This run loop is run over and over again.
 void loop() {
-  
+
   // here we read the range sensor and average the readings to detect a cat smoothly
-  total = total - readings[index];           // subtract the last reading: 
+  total = total - readings[index];           // subtract the last reading:
   readings[index] = analogRead(inputPin);    // read from the sensor
   total = total + readings[index];           // add the reading to the total:
-  index = index + 1;                         // advance to the next position in the array:  
+  index = index + 1;                         // advance to the next position in the array:
   if (index >= numReadings) index = 0;       // if we're at the end of the array, wrap around to the beginning.
 
   average = total / numReadings;             // calculate the average
 
   if (average > 350 && average < 550) {
-    //Serial.println("Found cat.");
     catDetected = true;
-    
+
     // turn on the arduino light for instant feedback
     digitalWrite(13, HIGH);
-    
-    //Serial.println("on");
+
     if (isLongEnough()) {
       // move faucet to on position
       if (servoPosition != ON_POSITION) {
-        //Serial.println("Turning Faucet On.");
         move(ON_POSITION);
         sendJSON();
       }
     }
-  } 
+  }
   else {
     catDetected = false;
-    
+
     // turn off light right away for instant feedback (though normally hidden in project box underneath sink)
     digitalWrite(13, LOW);
-    
+
     if (isLongEnough()) {
       // move faucet to off position
       if (servoPosition != OFF_POSITION) {
@@ -130,13 +134,14 @@ void loop() {
   delay(100);  // adjust this to taste, longer delay vs power usage(unverified)?
 }
 
+
 // delay for switching states
 boolean isLongEnough() {
   if (catDetected != catToggle) {
-    catToggle = catDetected;    
+    catToggle = catDetected;
     time = millis();  // reset time to avoid overrun
   }
-  
+
   // make faucet stay on longer once triggered
   if (servoPosition == ON_POSITION) {
     if (millis() - time > stayOnTime) {
@@ -151,30 +156,42 @@ boolean isLongEnough() {
   }
 }
 
-// this keeps bugging out when called mulitple times during runtime
-// probably due to the MD5 crap, not because of the Xbee/USB serial jumper
-// MD5 checksum taken out of here
-void sendJSON() {
-  // example JSON message
-  /*
-    {
-      "sensor": "sinks",
-      "name": "basement",
-      "proximity": "false",
-      "running": "true",
-      "hash": "ED076287532E86365E841E92BFC50D8C",
-      "type": "metric"
-    } 
+
+/*
+  About MD5 - this keeps bugging out when called mulitple times during runtime
+  probably due to the MD5 crap, not because of the Xbee/USB serial jumper
+  MD5 checksum taken out of here.  I think MD5 strings are too much for the
+  Arduino to do.
+
+  Desired and at one time working JSON message
+  {
+    "sensor": "sinks",
+    "name": "basement",
+    "proximity": "false",
+    "running": "true",
+    "hash": "ED076287532E86365E841E92BFC50D8C",
+    "type": "metric"
+  }
+
+  Effective JSON Message
+  {
+    ...
+    "hash": "nohash",
+    ...
+  }
+
+  Hashing for a serial checksum didn't work out.
   */
-  
+
+void sendJSON() {
   Serial.println("{");
   Serial.println("\t\"sensor\": \"" + sensor + "\",");
   Serial.println("\t\"name\": \"" + name + "\",");
-  
+
   Serial.print("\t\"hash\": \"");
   Serial.print("nohash");
   Serial.println("\",");
-  
+
   Serial.print("\t\"proximity\": \"");
   Serial.print(catDetected);
   Serial.println("\",");
@@ -188,10 +205,9 @@ void sendJSON() {
     Serial.print("UNKNOWN");
   }
   Serial.println("\",");
-  
+
   Serial.println("\t\"type\": \"metric\"");
   Serial.println("}");
-  
+
   delay(250);
 }
-

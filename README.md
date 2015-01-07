@@ -1,6 +1,8 @@
 Arduino Cat Faucet
 ==================
 
+*Project Complete.  Ran for four years.  RIP Beaker.  She was great.*
+
 This the software side of my Arduino Cat Faucet project.
 
 [Screenshots and blog post on squarism.com](http://squarism.com/2011/03/09/arduino-cat-faucet-with-mongodb-and-rails/)

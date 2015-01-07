@@ -20,10 +20,12 @@ data_bits = 8
 stop_bits = 1
 parity = SerialPort::NONE
 
+debug_mode = false
+
 # Variables for scope reasons
 # TODO: handle Errno::ENOENT if /dev path is wrong
 # TODO: print list of available USB devices
-sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
+serial_port = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 puts "Opened serial port."
 
 start_json = false
@@ -59,7 +61,7 @@ puts "Listening to serial port."
 # NOTE: This is severely limited in that it can't do nested JSON {} brackets inside
 # brackets.  I have to read a byte at a time, so sue me.
 while true do
-  c = sp.getc
+  c = serial_port.getc
 
   if c == "{" && !start_json
     start_json = true
@@ -112,13 +114,13 @@ while true do
       # MD5 feature completely crashing Arduino after two movements.  MD5 is excessive load on the Arduino.
       # So we'll just hardcode this for now and then remove it.
       if hash.upcase == "NOHASH"
-        puts "VALID: <#{type}>, proximity:#{proximity} running:#{running}"
+        puts "VALID: <#{type}>, proximity:#{proximity} running:#{running}" if debug_mode
         if !json_object["sensor"].nil?
 
           # ruby switch syntax
           case json_object["sensor"]
           when "sinks"
-		puts "Posting to #{rails_url}/sinks/ --> #{json_object}"
+        		puts "Posting to #{rails_url}/sinks/ --> #{json_object}" if debug_mode
             post_json("#{rails_url}/sinks/", json_object)
           when "pressure"
             post_json("#{rails_url}/pressures/", json_object)
@@ -137,10 +139,12 @@ while true do
       json_buffer = ""
       start_json = false
     elsif c == "}" && !start_json
-      # raise IOError, "JSON opening bracket found before other closed."
+      # This will stop the bridge, which is not what you want in "production"
+      # This is helpful for debugging though.
+      raise IOError, "JSON opening bracket found before other closed." if debug_mode
     end
   end
 
 end
 
-sp.close                       #see note 1
+serial_port.close                       #see note 1
